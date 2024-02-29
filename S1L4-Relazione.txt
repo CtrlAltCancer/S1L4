@@ -1,0 +1,113 @@
+Inseriti tutti i device, tra cui:
+1 router:
+2 switch;
+2 PC fissi;
+3 PC laptop.
+
+==============================================================
+
+Collegati i primi 2 laptop e un PC sul primo switch.
+La configurazione è come segue.
+Network:           192.168.100.0
+Assegnati gli IP come da consegna:
+LaptopPT0:         192.168.100.100/24
+PC0:               192.168.100.103/24
+Assegnato anche:
+LaptopPT1:         192.168.100.101/24
+
+Collegato l'ultimo laptop e un'altro PC sul secondo switch.
+La configurazione è come segue.
+Network:           192.168.200.0
+Assegnati gli IP come da consegna:
+LaptopPT2:         192.168.200.100/24
+Assegnato anche:
+PC1:               192.168.200.101/24
+
+Impostato il router nel modo seguente:
+GigabitEthernet0:  192.168.100.1
+GigabitEthernet1:  192.168.200.1
+Accese entrambe le porte.
+
+Gateway assegnato
+a dispositivi di
+Switch2:           192.168.100.1
+
+Gateway assegnato
+a dispositivi di
+Switch2:           192.168.100.1
+==============================================================
+| Prima consegna                                             |
+| Mettere in comunicazione il laptop-PT0 con IP              |
+| 192.168.100.100 con il PC-PT-PC0 con IP 192.168.100.103    |
+==============================================================
+
+Command prompt da LaptopPT0
+C:\>ping 192.168.100.103
+
+Pinging 192.168.100.103 with 32 bytes of data:
+
+Reply from 192.168.100.103: bytes=32 time=12ms TTL=128
+Reply from 192.168.100.103: bytes=32 time=6ms TTL=128
+Reply from 192.168.100.103: bytes=32 time=8ms TTL=128
+Reply from 192.168.100.103: bytes=32 time=7ms TTL=128
+
+Ping statistics for 192.168.100.103:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 6ms, Maximum = 12ms, Average = 8ms
+
+==============================================================
+
+OUT Layer 3 / 
+Inizia il processo di ping e crea un messaggio "ICMP Echo Request".
+OUT Layer 2 / 
+Il processo ARP cerca l'IP next-hop nella tabella. Dopo averlo trovato, imposta l'indirzzo MAC associato e inizia la capsulazione.
+OUT Layer 1 / 
+La porta FastEthernet0 (LaptopPT0) invia il segnale.
+
+IN Layer 1 / 
+La porta FastEthernet0 (PC0) riceve il segnale.
+IN Layer 2 /
+Il MAC di destinazione indicato coincide con l'indirizzo MAC della porta ricevente. Viene quindi decapsulato nel prossimo layer.
+IN Layer 3 /
+Gli indirizzi IP coincidono. Inizia il processo di decapsulazione.
+Ricezione dei segnali Ping e ICMP. Il processo si ripete per ciascun ping.
+
+
+==============================================================
+| Seconda consegna                                           |
+| Mettere in comunicazione il laptop-PT0 con IP              |
+| 192.168.100.100 con il laptop-PT2 con IP 192.168.200.100   |
+==============================================================
+
+Command prompt da LaptopPT0
+C:\>ping 192.168.200.100
+
+Pinging 192.168.200.100 with 32 bytes of data:
+
+Reply from 192.168.200.100: bytes=32 time=22ms TTL=127
+Reply from 192.168.200.100: bytes=32 time=14ms TTL=127
+Reply from 192.168.200.100: bytes=32 time=16ms TTL=127
+Reply from 192.168.200.100: bytes=32 time=16ms TTL=127
+
+Ping statistics for 192.168.200.100:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 14ms, Maximum = 22ms, Average = 17ms
+
+==============================================================
+
+OUT Layer 3 / 
+Inizia il processo di ping e crea un messaggio "ICMP Echo Request". Gli indirizzi non fanno parte della stessa subnet. Impostato il gateway, next-hop diventa il gateway corrente.
+OUT Layer 2 / 
+Il processo ARP cerca l'IP next-hop nella tabella. Dopo averlo trovato, imposta l'indirzzo MAC associato e inizia la capsulazione.
+OUT Layer 1 / 
+La porta FastEthernet0 (LaptopPT0) invia il segnale.
+
+IN Layer 1 / 
+La porta FastEthernet0 (LaptopPT2) riceve il segnale.
+IN Layer 2 /
+Il MAC di destinazione indicato coincide con l'indirizzo MAC della porta ricevente. Viene quindi decapsulato nel prossimo layer.
+IN Layer 3 /
+Gli indirizzi IP coincidono. Inizia il processo di decapsulazione.
+Ricezione dei segnali Ping e ICMP. Il processo si ripete per ciascun ping.
